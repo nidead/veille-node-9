@@ -6,6 +6,8 @@ const bodyParser= require('body-parser');
 const MongoClient = require('mongodb').MongoClient; // le pilote MongoDB
 const ObjectID = require('mongodb').ObjectID;
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: true}))
 /* on associe le moteur de vue au module «ejs» */
 const i18n = require('i18n');
 const cookieParser = require('cookie-parser');
@@ -104,18 +106,18 @@ req.body._id = 	ObjectID(req.body._id)
 
 
 ////////////////////////////////////////  Route /detruire
-app.get('/detruire/:id', (req, res) => {
- console.log('route /detruire')
- // console.log('util = ' + util.inspect(req.params));	
- var id = req.params.id
- console.log(id)
- db.collection('adresse')
- .findOneAndDelete({"_id": ObjectID(req.params.id)}, (err, resultat) => {
+// app.get('/detruire/:id', (req, res) => {
+//  console.log('route /detruire')
+//  // console.log('util = ' + util.inspect(req.params));	
+//  var id = req.params.id
+//  console.log(id)
+//  db.collection('adresse')
+//  .findOneAndDelete({"_id": ObjectID(req.params.id)}, (err, resultat) => {
 
-if (err) return console.log(err)
- res.redirect('/adresse')  // redirige vers la route qui affiche la collection
- })
-})
+// if (err) return console.log(err)
+//  res.redirect('/adresse')  // redirige vers la route qui affiche la collection
+//  })
+// })
 
 
 ///////////////////////////////////////////////////////////   Route /trier
@@ -153,6 +155,20 @@ app.post('/ajax_modifier', (req, res) => {
 		 res.send(JSON.stringify(req.body))
 	 })
 })
+
+app.post('/ajax_detruire/', (req, res) => {
+ console.log('route /detruire')
+ // console.log('util = ' + util.inspect(req.params));	
+
+
+ db.collection('adresse')
+ .findOneAndDelete({"_id": ObjectID(req.body._id)}, (err, resultat) => {
+
+if (err) return console.log(err)
+ res.send(JSON.stringify(resultat))  // redirige vers la route qui affiche la collection
+ })
+})
+
 
 
 
