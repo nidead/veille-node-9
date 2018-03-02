@@ -21,6 +21,7 @@
         <th><a href="/trier/prenom/<%= objOrdre.prenom %>"><%= __('prenom')%><i class="fas fa-<%= (objOrdre.prenom=='asc'?'sort-up': 'sort-down') %>"></i></a></th>        
         <th><a href="/trier/telephone/<%= objOrdre.telephone %>"><%= __('telephone')%><i class="fas fa-<%= (objOrdre.telephone=='asc'?'sort-up': 'sort-down') %>"></i></a></th>  
         <th><a href="/trier/courriel/<%= objOrdre.courriel %>"><%= __('courriel')%><i class="fas fa-<%= (objOrdre.courriel=='asc'?'sort-up': 'sort-down') %>"></i></a></th>      
+        <th><a class="ajouter"><i class="fas fa-plus-circle" aria-hidden="true"></i></a></th>
     </tr>
     <%  for (elm of adresses) {%>
     <tr>
@@ -29,13 +30,16 @@
         <td contenteditable='true'><%= elm.prenom %></td>
         <td contenteditable='true'><%= elm.telephone %></td>                
         <td contenteditable='true'><%= elm.courriel %></td>    
+
         <td><a class="detruire" href="#"><i class="fas fa-trash-alt" aria-hidden="true"></i></a></td>
         <td><a class='modifier' href="#"><i class="far fa-save" aria-hidden="true"></i></a></td>
     </tr>
     <% } %>
 </table>
 
+<button id='ajouter'>ajouter</button>
 <button id='testAJAX'>test AJAX</button>
+
 
 
 <script type="text/javascript">
@@ -149,7 +153,75 @@ let elmDetruire = document.querySelectorAll('.detruire')
             // elmForm.submit()
             })
         }
+ let elmAjouter = document.querySelector('.ajouter')
+    console.log(elmAjouter.length)
 
+            elmAjouter.addEventListener('click', function(){
+                
+            /*
+            var node = document.createElement("LI");
+            var textnode = document.createTextNode("Water");
+            
+            node.appendChild(textnode);
+            document.getElementById("myList").appendChild(node);
+            */
+                
+            console.log(this.parentElement.parentElement.id)
+            let elmTr = this.parentElement.parentElement 
+            
+            xhr = new XMLHttpRequest();
+            xhr.open('POST', "/ajax_ajouter", true);
+                
+            data = {
+     
+                "nom" : "",
+                "prenom" : "",
+                "telephone" : "",
+                "courriel" : ""
+            }
+                
+            sData = JSON.stringify(data);
+            xhr.setRequestHeader('Content-type', 'application/json');
+            xhr.send(sData);
+            xhr.addEventListener("readystatechange", traiterRequest, false);
+
+           /* elmForm = document.getElementById('frmUpdate')
+            elmForm.nom.value = nom
+            elmForm.prenom.value = prenom
+            elmForm.telephone.value = telephone
+            elmForm.courriel.value = courriel
+            elmForm._id.value =  _id
+            elmForm.submit()*/
+                
+            })
+        
+        function traiterRequest(e){
+            console.log("xhr.readyState = " + xhr.readyState)
+            console.log("xhr.status = " + xhr.status)
+
+            if(xhr.readyState == 4 && xhr.status == 200){
+                console.log('ajax fonctionne')
+                var response = JSON.parse(xhr.responseText);
+                console.log(response)
+                console.log("response._id = " + response._id)
+                console.log(xhr.responseText);
+                let elmTr = document.createElement('tr')
+                let elmTBody = document.querySelector('.tableau tbody')
+                let ligne_de_td = '<td >' + response._id + '</td>'
+                                + '<td contenteditable="true"></td>'
+                                + '<td contenteditable="true"></td>'
+                                + '<td contenteditable="true"></td>'
+                                + '<td contenteditable="true"></td>'
+                                + '<td><a class="detruire" href="/detruire/<%= elm._id %>"><i class="fas fa-trash-alt" aria-hidden="true"></i></a></td>'
+                                + '<td><a class="modifier" href="#"><i class="far fa-save" aria-hidden="true"></i></a></td>'
+                
+                elmTr.innerHTML =  ligne_de_td
+                elmTBody.appendChild(elmTr)
+                
+                
+                // elmLigne.style.backgroundColor = "#0f0"
+            }
+        }
 
 
 </script>
