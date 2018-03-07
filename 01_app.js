@@ -2,6 +2,10 @@ const express = require('express');
 const fs = require('fs');
 const util = require("util");
 const app = express();
+
+
+
+
 const bodyParser= require('body-parser');
 const MongoClient = require('mongodb').MongoClient; // le pilote MongoDB
 const ObjectID = require('mongodb').ObjectID;
