@@ -67,39 +67,86 @@ xhr.addEventListener("readystatechange", traiterRequest, false);
 // Dans notre fichier .ejs
 // Pour traiter le résultat transmis par l'application serveur 
 
-
-
-function traiterRequest(e){
+function traiterRequest(e) {
             console.log("xhr.readyState = " + xhr.readyState)
             console.log("xhr.status = " + xhr.status)
-
-            if(xhr.readyState == 4 && xhr.status == 200){
+            if(xhr.readyState == 4 && xhr.status == 200) {
+                console.log('ajax fonctionne')
                 let  maReponse = JSON.parse(xhr.responseText);
                 console.log(xhr.responseText);
                 console.log(maReponse._id)
-                console.log('ajax fonctionne')
-                var response = JSON.parse(xhr.responseText);
-                console.log(response)
-                console.log("response._id = " + response._id)
-                console.log(xhr.responseText);
-                // let elmTr = document.createElement('tr')
-                // let elmTBody = document.querySelector('.tableau tbody')
-                // let ligne_de_td = '<td >' + response._id + '</td>'
-                //                 + '<td contenteditable="true"></td>'
-                //                 + '<td contenteditable="true"></td>'
-                //                 + '<td contenteditable="true"></td>'
-                //                 + '<td contenteditable="true"></td>'
-                //                 + '<td><a class="detruire" href="#"><i class="fas fa-trash-alt" aria-hidden="true"></i></a></td>'
-                //                 + '<td><a class="modifier" href="#"><i class="far fa-save" aria-hidden="true"></i></a></td>'
-                
-                // elmTr.innerHTML =  ligne_de_td
-                // elmTBody.appendChild(elmTr)
-                
-                
-                // elmLigne.style.backgroundColor = "#0f0"
             }
         }
-let elmAjouter = document.querySelector('.ajouter')
+  
+    let elmModifier = document.querySelectorAll('.modifier')
+    console.log(elmModifier.length)
+    for (elm of elmModifier)
+        {
+            elm.addEventListener('click', function(){
+            console.log(this.parentElement.parentElement.id)
+            let elmTr = this.parentElement.parentElement 
+            let _id = elmTr.querySelector('td:nth-child(1)').innerHTML
+            let nom = elmTr.querySelector('td:nth-child(2)').innerHTML
+            let prenom = elmTr.querySelector('td:nth-child(3)').innerHTML
+            let telephone = elmTr.querySelector('td:nth-child(4)').innerHTML
+            let courriel = elmTr.querySelector('td:nth-child(5)').innerHTML
+            xhr = new XMLHttpRequest();
+            xhr.open('POST', "/ajax_modifier", true);
+                data = { 
+                 "nom" : nom,
+                 "prenom" : prenom,
+                 "telephone" : telephone,
+                 "_id" : _id 
+                }
+                console.log(data)
+                sData = JSON.stringify(data);
+                xhr.setRequestHeader('Content-type', 'application/json');
+                xhr.send(sData);
+                xhr.addEventListener("readystatechange", traiterRequest, false);
+
+            // elmForm = document.getElementById('frmUpdate')
+            // elmForm.nom.value = nom
+            // elmForm.prenom.value = prenom
+            // elmForm.telephone.value = telephone
+            // elmForm.courriel.value = courriel
+            // elmForm._id.value =  _id
+            // elmForm.submit()
+            })
+        }
+
+let elmDetruire = document.querySelectorAll('.detruire')
+    console.log(elmDetruire.length)
+    for (elm of elmDetruire)
+        {
+            elm.addEventListener('click', function(){
+            console.log(this.parentElement.parentElement.id)
+            let elmTr = this.parentElement.parentElement 
+            let _id = elmTr.querySelector('td:nth-child(1)').innerHTML
+            let nom = elmTr.querySelector('td:nth-child(2)').innerHTML
+            let prenom = elmTr.querySelector('td:nth-child(3)').innerHTML
+            let telephone = elmTr.querySelector('td:nth-child(4)').innerHTML
+            let courriel = elmTr.querySelector('td:nth-child(5)').innerHTML
+            xhr = new XMLHttpRequest();
+            xhr.open('POST', "/ajax_detruire/", true);
+              data = { 
+                 "_id" : _id 
+                }
+                console.log(data)
+                sData = JSON.stringify(data);
+                xhr.setRequestHeader('Content-type', 'application/json');
+              xhr.send(sData);
+                xhr.addEventListener("readystatechange", traiterRequest, false);
+            // elmForm = document.getElementById('frmUpdate')
+            // elmForm.nom.value = nom
+            // elmForm.prenom.value = prenom
+            // elmForm.telephone.value = telephone
+            // elmForm.courriel.value = courriel
+            // elmForm._id.value =  _id
+            // elmForm.submit()
+            })
+        }
+
+        let elmAjouter = document.querySelector('.ajouter')
     console.log(elmAjouter.length)
 
             elmAjouter.addEventListener('click', function(){
@@ -138,81 +185,31 @@ let elmAjouter = document.querySelector('.ajouter')
             elmForm.courriel.value = courriel
             elmForm._id.value =  _id
             elmForm.submit()*/
-                
-            })
+          function traiterRequest(e){
+      console.log("xhr.readyState = " + xhr.readyState)
+      console.log("xhr.status = " + xhr.status)
+
+      if(xhr.readyState == 4 && xhr.status == 200) {
+        console.log('ajax fonctionne')
+        var response = JSON.parse(xhr.responseText);
+        console.log(response)
+        console.log("response._id = " + response._id)
+        console.log(xhr.responseText);
+        let elmTr = document.createElement('tr')
+        let elmTBody = document.querySelector('.tableau tbody')
+        let ligne_de_td = '<td >' + response._id + '</td>'
+                        + '<td contenteditable="true"></td>'
+                        + '<td contenteditable="true"></td>'
+                        + '<td contenteditable="true"></td>'
+                        + '<td contenteditable="true"></td>'
+                        + '<td><a class="detruire" href="/detruire/<%= elm._id %>"><i class="fas fa-trash-alt" aria-hidden="true"></i></a></td>'
+                        + '<td><a class="modifier" href="#"><i class="far fa-save" aria-hidden="true"></i></a></td>'
         
-        
-
-    let elmModifier = document.querySelectorAll('.modifier')
-    console.log(elmModifier.length)
-    for (elm of elmModifier)
-        {
-            elm.addEventListener('click', function(){
-            console.log(this.parentElement.parentElement.id)
-            let elmTr = this.parentElement.parentElement 
-            let _id = elmTr.querySelector('td:nth-child(1)').innerHTML
-            let nom = elmTr.querySelector('td:nth-child(2)').innerHTML
-            let prenom = elmTr.querySelector('td:nth-child(3)').innerHTML
-            let telephone = elmTr.querySelector('td:nth-child(4)').innerHTML
-            let courriel = elmTr.querySelector('td:nth-child(5)').innerHTML
-            xhr = new XMLHttpRequest();
-            xhr.open('POST', "/ajax_modifier", true);
-                data = { 
-                 "nom" : nom,
-                 "prenom" : prenom,
-                 "telephone" : telephone,
-                 "_id" : _id 
-                }
-                console.log(data)
-                sData = JSON.stringify(data);
-                xhr.setRequestHeader('Content-type', 'application/json');
-                xhr.send(sData);
-                xhr.addEventListener("readystatechange", traiterRequest, false);
-
-            // elmForm = document.getElementById('frmUpdate')
-
-            // elmForm.nom.value = nom
-            // elmForm.prenom.value = prenom
-            // elmForm.telephone.value = telephone
-            // elmForm.courriel.value = courriel
-            // elmForm._id.value =  _id
-            // elmForm.submit()
+        elmTr.innerHTML =  ligne_de_td
+        elmTBody.appendChild(elmTr)
+      }
+    }       
             })
-        }
-
-let elmDetruire = document.querySelectorAll('.detruire')
-    console.log(elmDetruire.length)
-    for (elm of elmDetruire)
-        {
-            elm.addEventListener('click', function(){
-            console.log(this.parentElement.parentElement.id)
-            let elmTr = this.parentElement.parentElement 
-            let _id = elmTr.querySelector('td:nth-child(1)').innerHTML
-            let nom = elmTr.querySelector('td:nth-child(2)').innerHTML
-            let prenom = elmTr.querySelector('td:nth-child(3)').innerHTML
-            let telephone = elmTr.querySelector('td:nth-child(4)').innerHTML
-            let courriel = elmTr.querySelector('td:nth-child(5)').innerHTML
-            xhr = new XMLHttpRequest();
-            xhr.open('POST', "/ajax_detruire/", true);
-              data = { 
-                 "_id" : _id 
-                }
-                console.log(data)
-                sData = JSON.stringify(data);
-                xhr.setRequestHeader('Content-type', 'application/json');
-              xhr.send(sData);
-                xhr.addEventListener("readystatechange", traiterRequest, false);
-
-            // elmForm = document.getElementById('frmUpdate')
-
-            // elmForm.nom.value = nom
-            // elmForm.prenom.value = prenom
-            // elmForm.telephone.value = telephone
-            // elmForm.courriel.value = courriel
-            // elmForm._id.value =  _id
-            // elmForm.submit()
-            })
-        }
 
   
 
