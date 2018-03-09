@@ -41,7 +41,7 @@
 
 
 <script type="text/javascript">
-    let elmTr = document.getElementById("<%= elm._id %>")
+
     let elmModifier = document.querySelectorAll('.modifier')
     let elmDetruire = document.querySelectorAll('.detruire')
     console.log(elmModifier.length)
@@ -118,8 +118,7 @@
                     console.log(xhr.responseText);
                 }
             }
-
-        //Ajouter
+            //Ajouter
         let elmAjouter = document.querySelector('.ajouter')
     console.log(elmAjouter.length)
 
@@ -140,10 +139,10 @@
         sData = JSON.stringify(data);
         xhr.setRequestHeader('Content-type', 'application/json');
         xhr.send(sData);
-        xhr.addEventListener("readystatechange", traiterRequest, false);
+        xhr.addEventListener("readystatechange", autrucheninja, false);
     })
 
-    function traiterRequest(e){
+    function autrucheninja(e){
       console.log("xhr.readyState = " + xhr.readyState)
       console.log("xhr.status = " + xhr.status)
 
@@ -160,12 +159,14 @@
                         + '<td contenteditable="true"></td>'
                         + '<td contenteditable="true"></td>'
                         + '<td contenteditable="true"></td>'
-                        + '<td><a class="detruire" href="/detruire/<%= elm._id %>"><i class="fas fa-trash-alt" aria-hidden="true"></i></a></td>'
-                        + '<td><a class="modifier" href="#"><i class="far fa-save" aria-hidden="true"></i></a></td>'    
+                        + '<td><a class="detruire" href="#"><i class="fas fa-trash-alt" aria-hidden="true"></i></a></td>'
+                        + '<td><a class="modifier" href="#"><i class="far fa-save" aria-hidden="true"></i></a></td>'
+        
         elmTr.innerHTML =  ligne_de_td
         elmTBody.appendChild(elmTr)
       }
     }
+
 
 </script>
 
