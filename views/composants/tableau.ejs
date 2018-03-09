@@ -39,47 +39,13 @@
 <button id='testAJAX'>test AJAX</button>
 
 
+
 <script type="text/javascript">
-// dans notre fichier .ejs
-// Notre code JavaScript pour effectuer un transfert AJAX
-
-
-
-let elmBouton = document.getElementById('testAJAX')
-elmBouton.addEventListener('click', ()=>{
-console.log('ok')
-xhr = new XMLHttpRequest();
-xhr.open('POST', "/ajax_modifier", true);
-data = {
-"nom" : "AAAA",
-"prenom" : "BBBB",
-"telephone" : "CCCC",
-"_id" : "5a998d48fbcb5c1c48c28d17"
-}
-console.log(data)
-sData = JSON.stringify(data);
-xhr.setRequestHeader('Content-type', 'application/json');
-xhr.send(sData);
-xhr.addEventListener("readystatechange", traiterRequest, false);
-})
-
-
-// Dans notre fichier .ejs
-// Pour traiter le résultat transmis par l'application serveur 
-
-function traiterRequest(e) {
-            console.log("xhr.readyState = " + xhr.readyState)
-            console.log("xhr.status = " + xhr.status)
-            if(xhr.readyState == 4 && xhr.status == 200) {
-                console.log('ajax fonctionne')
-                let  maReponse = JSON.parse(xhr.responseText);
-                console.log(xhr.responseText);
-                console.log(maReponse._id)
-            }
-        }
-  
+    let elmTr = document.getElementById("<%= elm._id %>")
     let elmModifier = document.querySelectorAll('.modifier')
+    let elmDetruire = document.querySelectorAll('.detruire')
     console.log(elmModifier.length)
+    let xhr = new XMLHttpRequest();
     for (elm of elmModifier)
         {
             elm.addEventListener('click', function(){
@@ -90,102 +56,94 @@ function traiterRequest(e) {
             let prenom = elmTr.querySelector('td:nth-child(3)').innerHTML
             let telephone = elmTr.querySelector('td:nth-child(4)').innerHTML
             let courriel = elmTr.querySelector('td:nth-child(5)').innerHTML
-            xhr = new XMLHttpRequest();
+
+                
             xhr.open('POST', "/ajax_modifier", true);
-                data = { 
-                 "nom" : nom,
-                 "prenom" : prenom,
-                 "telephone" : telephone,
-                 "_id" : _id 
-                }
-                console.log(data)
-                sData = JSON.stringify(data);
-                xhr.setRequestHeader('Content-type', 'application/json');
-                xhr.send(sData);
-                xhr.addEventListener("readystatechange", traiterRequest, false);
-
-            // elmForm = document.getElementById('frmUpdate')
-            // elmForm.nom.value = nom
-            // elmForm.prenom.value = prenom
-            // elmForm.telephone.value = telephone
-            // elmForm.courriel.value = courriel
-            // elmForm._id.value =  _id
-            // elmForm.submit()
-            })
-        }
-
-let elmDetruire = document.querySelectorAll('.detruire')
-    console.log(elmDetruire.length)
-    for (elm of elmDetruire)
-        {
-            elm.addEventListener('click', function(){
-            console.log(this.parentElement.parentElement.id)
-            let elmTr = this.parentElement.parentElement 
-            let _id = elmTr.querySelector('td:nth-child(1)').innerHTML
-            let nom = elmTr.querySelector('td:nth-child(2)').innerHTML
-            let prenom = elmTr.querySelector('td:nth-child(3)').innerHTML
-            let telephone = elmTr.querySelector('td:nth-child(4)').innerHTML
-            let courriel = elmTr.querySelector('td:nth-child(5)').innerHTML
-            xhr = new XMLHttpRequest();
-            xhr.open('POST', "/ajax_detruire/", true);
-              data = { 
-                 "_id" : _id 
-                }
-                console.log(data)
-                sData = JSON.stringify(data);
-                xhr.setRequestHeader('Content-type', 'application/json');
-              xhr.send(sData);
-                xhr.addEventListener("readystatechange", traiterRequest, false);
-            // elmForm = document.getElementById('frmUpdate')
-            // elmForm.nom.value = nom
-            // elmForm.prenom.value = prenom
-            // elmForm.telephone.value = telephone
-            // elmForm.courriel.value = courriel
-            // elmForm._id.value =  _id
-            // elmForm.submit()
-            })
-        }
-
-        let elmAjouter = document.querySelector('.ajouter')
-    console.log(elmAjouter.length)
-
-            elmAjouter.addEventListener('click', function(){
-                
-            /*
-            var node = document.createElement("LI");
-            var textnode = document.createTextNode("Water");
-            
-            node.appendChild(textnode);
-            document.getElementById("myList").appendChild(node);
-            */
-                
-            console.log(this.parentElement.parentElement.id)
-            let elmTr = this.parentElement.parentElement 
-            
-            xhr = new XMLHttpRequest();
-            xhr.open('POST', "/ajax_ajouter", true);
-                
             data = {
-     
-                "nom" : "",
-                "prenom" : "",
-                "telephone" : "",
-                "courriel" : ""
+            "_id" : _id,
+            "nom" : nom,
+            "prenom" : prenom,
+            "telephone" : telephone,
+            "courriel" : courriel
             }
-                
+            console.log(data)
             sData = JSON.stringify(data);
             xhr.setRequestHeader('Content-type', 'application/json');
             xhr.send(sData);
             xhr.addEventListener("readystatechange", traiterRequest, false);
+            
+            function traiterRequest(e)
+                {
+                    console.log("xhr.readyState = " + xhr.readyState)
+                    console.log("xhr.status = " + xhr.status)
+                    if(xhr.readyState == 4 && xhr.status == 200)
+                    {
+                    console.log('ajax fonctionne')
+                    let  maReponse = JSON.parse(xhr.responseText);
+                    console.log(xhr.responseText);
+                    console.log(maReponse._id)                    
+                    elmTr.style.backgroundColor="green"    
+                    }
+                }    
 
-           /* elmForm = document.getElementById('frmUpdate')
-            elmForm.nom.value = nom
-            elmForm.prenom.value = prenom
-            elmForm.telephone.value = telephone
-            elmForm.courriel.value = courriel
-            elmForm._id.value =  _id
-            elmForm.submit()*/
-          function traiterRequest(e){
+            })
+            
+        }
+
+        let elmErase = document.querySelectorAll('.detruire')
+        for (elm of elmErase) {
+            elm.addEventListener('click', function() {
+            let laLigne = this.parentNode.parentNode
+            console.log(laLigne.tagName)
+            let id = laLigne.children[0].innerHTML
+            xhr = new XMLHttpRequest();
+            xhr.open('POST', "/ajax_detruire", true);
+            data = {
+                "_id" : id
+            }
+            sData = JSON.stringify(data);
+            xhr.setRequestHeader('Content-type', 'application/json');
+            xhr.send(sData);
+            xhr.ligne = laLigne;
+            xhr.addEventListener("readystatechange", effacerRequest, false);
+            })
+        }
+
+            function effacerRequest(e) {
+                console.log("effacer", e.target.ligne);
+                console.log("xhr.readyState = " + xhr.readyState)
+                console.log("xhr.status = " + xhr.status)
+                if(xhr.readyState == 4 && xhr.status == 200) {
+                    e.target.ligne.parentNode.removeChild(e.target.ligne)
+                    console.log(xhr.responseText);
+                }
+            }
+
+        //Ajouter
+        let elmAjouter = document.querySelector('.ajouter')
+    console.log(elmAjouter.length)
+
+    elmAjouter.addEventListener('click', function() {  
+        console.log(this.parentElement.parentElement.id)
+        let elmTr = this.parentElement.parentElement 
+        
+        xhr = new XMLHttpRequest();
+        xhr.open('POST', "/ajax_ajouter", true);
+            
+        data = {
+            "nom" : "",
+            "prenom" : "",
+            "telephone" : "",
+            "courriel" : ""
+        }
+            
+        sData = JSON.stringify(data);
+        xhr.setRequestHeader('Content-type', 'application/json');
+        xhr.send(sData);
+        xhr.addEventListener("readystatechange", traiterRequest, false);
+    })
+
+    function traiterRequest(e){
       console.log("xhr.readyState = " + xhr.readyState)
       console.log("xhr.status = " + xhr.status)
 
@@ -203,15 +161,11 @@ let elmDetruire = document.querySelectorAll('.detruire')
                         + '<td contenteditable="true"></td>'
                         + '<td contenteditable="true"></td>'
                         + '<td><a class="detruire" href="/detruire/<%= elm._id %>"><i class="fas fa-trash-alt" aria-hidden="true"></i></a></td>'
-                        + '<td><a class="modifier" href="#"><i class="far fa-save" aria-hidden="true"></i></a></td>'
-        
+                        + '<td><a class="modifier" href="#"><i class="far fa-save" aria-hidden="true"></i></a></td>'    
         elmTr.innerHTML =  ligne_de_td
         elmTBody.appendChild(elmTr)
       }
-    }       
-            })
-
-  
+    }
 
 </script>
 

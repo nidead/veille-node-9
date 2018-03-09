@@ -5,5 +5,9 @@
 	"adresse": "Adresse",
 	"nom": "Nom",
 	"prenom": "Prénom",
-	"telephone": "Téléphone"
+	"telephone": "Téléphone",
+	"clavardage": "clavardage",
+	"chat": "chat",
+	"login": "login",
+	"send": "send"
 }

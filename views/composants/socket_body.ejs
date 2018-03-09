@@ -1,18 +1,20 @@
-<h2>clavardage</h2>
+<h2 id="titre"><%= __("chat") %></h2>
 <section id="enregistrement">
  <input type="text">
- <button onclick="enregistrement()">Enregistrement</button>
+ <button onclick="enregistrement()"><%= __("login") %></button>
 </section>
 
-<section id='chat' style="display: none">
-	<table id='list_user'></table>
-	<table id='message'></table>
+<section id="chat" style="display:none">
+	
+	<table id="list_user"></table><br>
+	<table id="message"></table>
 	<section id="message_a_transmettre">
-		<input type="text" name="txtMessae"><button>Transmettre</button>
+		
+		<input type="text" name="txtMessage"><button onclick="transmettreMessage()"><%= __("send") %></button>
+
 	</section>
+
 </section>
-
-
 
 <script type="text/javascript">
  /* 
@@ -21,44 +23,102 @@ Pour établir une communication socket il faut un premier appel de
  Cette fonction est incluse dans la librairie socket.io. 
  Cette fonction déclenche un événement connect vers le serveur
  */
- let socket = io();
+ let socket
  window.onload = ()=>{
  socket = io()
  console.log(socket.id);
+
  socket.on('connect', function(){
- console.log('Le socket id = ' + socket.id); 
- /* l'événement ackUser a été transmis par le serveur */ 
- socket.on('valide_user', function(data){
- console.log('data en provenance du serveur = ' + data.user)
-	let elmEn = document.getElementById('enregistrement')
-	elmEn.style.display= 'none'
+	 
+	 console.log('Le socket id = ' + socket.id); 
+	 /* l'événement ackUser a été transmis par le serveur */ 
+	 
+	 socket.on('valide_user', function(data){
+	 	console.log('data en provenance du serveur = ' + data.user)
+	 	let elmEnregistrement = document.getElementById("enregistrement")
+	 	elmEnregistrement.style.display="none"
+	 	let elmChat=document.getElementById("chat")
+	 	elmChat.style.display="flex"
 
-	let elmChat = document.getElementById('chat')
-	elmChat.style.display= 'flex'
- })
- /////////////////////////////////////////////////////////////////////
-socket.on("diffuser_list_user", function(data){
-	let sChaine =""
-	for(id in data){
-		sChaine+= '<tr>'
-		+'<td>'+ id + '</td>'
-		+'<td>'+ data[id]+'</td>'
-		+'</tr>'
-	}
+	 })
+	 
+	 socket.on("diffuser_list_user", function(data){
 
-		let elmListUser= document.getElementById('list_user')
-		elmListUser.innerHTML = sChaine
-})
+	 	afficheTableauUsers(data)
 
+	 })
+
+	 socket.on("valide_message", function(data){
+
+	 	console.log("valide_message = " + data)
+	 	afficherMessage(data, "#0f0")
+
+	 })
+
+	 socket.on("diffuser_message", function(data){
+
+	 	console.log("diffuser_message = " + data)
+	 	afficherMessage(data, "#00f")
+
+	 })
 
  });
  }
-/* ---------------------------------------------------------- */
+
+
+////////////////////////////////////////////////////////
+
  function enregistrement(){
- let elmUser = document.querySelector('#enregistrement input')
- console.log(elmUser.value)
- /* l'événement « setUser » est transmit avec un objet 
- */
- socket.emit('valide_user', {user : elmUser.value})
+	 let elmUser = document.querySelector('#enregistrement input')
+	 console.log(elmUser.value)
+	 /* l'événement « setUser » est transmit avec un objet 
+	 */
+	 socket.emit('setUser', {user : elmUser.value})
  }
+
+////////////////////////////////////////////////////////Transmettre un message
+
+function transmettreMessage(){
+	 let elmMessage = document.querySelector('#message_a_transmettre input')
+	 console.log(elmMessage.value)
+	 
+	 socket.emit('setMessage', {message : elmMessage.value})
+ } 
+
+//////////////////////////////////////////////////////// Afficher tableau users
+
+function afficheTableauUsers(data){
+
+	let sChaine=""
+	 	for(id in data)
+	 	{
+
+	 		sChaine +="<tr>"
+	 				+"<td>" + id + "</td>"
+	 				+"<td>" + data[id] + "</td>"
+	 				+"</tr>"
+
+	 	}
+	 	let elmListUser = document.getElementById("list_user")
+	 	elmListUser.innerHTML=sChaine
+
+}
+
+////////////////////////////////////////////////////////Affiche les messages
+
+function afficherMessage(data, couleur){
+	let elmTr = document.createElement("TR")
+	
+	let sMessage="<td style='background-color:"+ couleur +";'>" + data.user  +"</td>"
+				+"<td>==></td>"
+				+"<td>" + data.message  +"</td>"
+	
+	elmTr.innerHTML=sMessage				
+
+	let elmMessage = document.getElementById("message")
+	
+	elmMessage.appendChild(elmTr)
+
+}
+
 </script>
